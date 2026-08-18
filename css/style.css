@@ -1,0 +1,472 @@
+:root {
+  --bg-color: #202124;
+  --side-bg: #28292c; /* Inner panel color */
+  --text-color: #e8eaed;
+  --text-dim: #9aa0a6;
+  --accent: #8ab4f8;
+  --border: #3c4043;
+  --outer-shell: #1d2636; /* Darkest outer shell */
+  --tile-bg: #313a49;
+}
+
+[data-theme="light"] {
+  --bg-color: #ffffff;
+  --side-bg: #ffffff;
+  --text-color: #202124;
+  --text-dim: #5f6368;
+  --accent: #1a73e8;
+  --border: #dadce0;
+  --outer-shell: #f1f3f4;
+  --tile-bg: #f1f3f4;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: "Roboto", sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: background 0.3s ease;
+}
+
+/* --- SHORTCUTS GRID --- */
+.shortcuts-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.shortcut-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px;
+  padding: 10px 0;
+  background: transparent;
+  cursor: pointer;
+  position: relative; /* For edit dots positioning */
+}
+
+.icon-box {
+  width: 64px;
+  height: 64px;
+  background: var(--tile-bg);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  transition: 0.3s;
+}
+.icon-box img {
+  width: 32px;
+  height: 32px;
+}
+.label {
+  font-size: 13px;
+  text-align: center;
+  color: var(--text-color);
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- THREE DOTS (Edit Button) --- */
+.edit-dots {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition:
+    opacity 0.2s,
+    background 0.2s;
+  border: none;
+  cursor: pointer;
+  z-index: 5;
+}
+.shortcut-item:hover .edit-dots {
+  opacity: 1;
+}
+.edit-dots:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+}
+
+/* --- SIDEBAR STRUCTURE (Exact Image Match) --- */
+.chrome-sidebar {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  height: 100vh;
+  background: #1d2636;
+  transition: right 0.25s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+.chrome-sidebar.active {
+  right: 0;
+}
+
+.sidebar-header {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  background-color: var(--side-bg);
+
+  margin: 10px;
+  border-radius: 12px;
+}
+.sidebar-header h2 {
+  font-size: 15px;
+  font-weight: 500;
+}
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+}
+
+.sidebar-scroll-content {
+  overflow-y: auto;
+  flex: 1;
+  padding: 0 8px;
+}
+
+/* The Nested Panels (The "Dabbas") */
+.sidebar-panel {
+  background: var(--side-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-bottom: 12px;
+}
+
+.mini-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  font-size: 14px;
+}
+
+.section-label {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  display: block;
+}
+
+/* Colors Grid */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.theme-box-wrapper {
+  aspect-ratio: 1/1;
+  border-radius: 16px;
+  padding: 5px;
+  background: var(--outer-shell);
+  cursor: pointer;
+  position: relative;
+  border: 2.5px solid transparent;
+}
+.theme-box-wrapper.active {
+  border-color: var(--accent);
+}
+.theme-box {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.split-bg {
+  background:
+    linear-gradient(var(--c1) 50%, transparent 50%),
+    linear-gradient(90deg, var(--c2) 50%, var(--c3) 50%);
+}
+
+.custom-picker-box {
+  background: var(--bg-color);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.custom-picker-box input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.segmented-control {
+  display: flex;
+  background: rgba(128, 128, 128, 0.1);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.segmented-control button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 13px;
+}
+.segmented-control button.active {
+  background: var(--bg-color);
+  border: 1px solid var(--accent);
+}
+
+.follow-colors-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 13px;
+}
+.action-btn-outline {
+  width: 100%;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 50px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.switch {
+  position: relative;
+  width: 34px;
+  height: 20px;
+}
+.switch input {
+  opacity: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #5f6368;
+  border-radius: 20px;
+  transition: 0.3s;
+}
+input:checked + .slider {
+  background: var(--accent);
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+input:checked + .slider:before {
+  transform: translateX(14px);
+}
+
+.customize-fab {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background: var(--side-bg);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  padding: 10px 18px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  z-index: 50;
+}
+.hidden {
+  display: none !important;
+}
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* --- SHORTCUT MODAL FIXED --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(2px);
+}
+.modal-box {
+  background: var(--side-bg);
+  padding: 24px;
+  border-radius: 12px;
+  width: 440px; /* Chrome standard width */
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+.modal-box h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+.modal-field {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.modal-field label {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.modal-field input {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  border-bottom: 2px solid var(--border);
+  color: white;
+  border-radius: 4px 4px 0 0;
+  outline: none;
+  font-size: 14px;
+}
+.modal-field input:focus {
+  border-bottom-color: var(--accent);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+}
+.right-btns {
+  display: flex;
+  gap: 8px;
+}
+.btn-solid {
+  background: var(--accent);
+  color: #000;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-weight: 500;
+  border: none;
+}
+.btn-stroke {
+  border: 1px solid var(--border);
+  color: var(--accent);
+  padding: 10px 24px;
+  border-radius: 4px;
+  background: transparent;
+}
+.btn-flat {
+  background: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.btn-danger {
+  color: #f28b82;
+}
+
+/* --- SHORTCUTS GRID (Refined Spacing) --- */
+.shortcuts-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 35px; /* Gap thoda badhaya spacious feel ke liye */
+}
+
+.shortcut-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90px;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-box {
+  width: 64px;
+  height: 64px;
+  background: var(--tile-bg);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25); /* Subtle shadow for depth */
+  transition: 0.3s;
+}
+
+.icon-box img {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2)); /* Icon par bhi shadow */
+}
+
+/* Label Fix - Dullness removal */
+.label {
+  font-size: 13px;
+  text-align: center;
+  color: #c7c7c7; /* PURE WHITE for labels */
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  opacity: 1; /* Pure white, no transparency */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Visibility fix */
+}
+
+/* Plus Icon inside the grid */
+.add-btn .icon-box svg {
+  color: #ffffff;
+  width: 30px;
+  height: 30px;
+}

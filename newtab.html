@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Tab</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/contribution.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="dashboard">
+      <!-- Full-width, scrollable, ~1 year contribution graph -->
+      <div class="graph-panel">
+        <div class="graph-title">Tasks complete graph</div>
+        <div id="contribution-scroll">
+          <div id="contribution-months" class="contribution-months"></div>
+          <div id="contribution-graph" class="contribution-graph"></div>
+        </div>
+        <div class="contrib-legend">
+          <span>Less</span>
+          <div class="contrib-cell level-0"></div>
+          <div class="contrib-cell level-1"></div>
+          <div class="contrib-cell level-2"></div>
+          <div class="contrib-cell level-3"></div>
+          <span>More</span>
+        </div>
+      </div>
+
+      <!-- Shortcuts (left) + today's tasks (right, fixed height, material card) -->
+      <div class="content-row">
+        <div class="shortcuts-panel">
+          <div id="shortcuts-grid" class="shortcuts-grid"></div>
+        </div>
+
+        <div class="tasks-panel">
+          <div class="tasks-panel-title">Today's targets</div>
+          <div id="tasks-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customize FAB -->
+    <button id="sidebar-toggle" class="customize-fab">
+      <svg viewBox="0 0 24 24" width="18">
+        <path
+          d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+          fill="currentColor"
+        />
+      </svg>
+      <span>Customize</span>
+    </button>
+
+    <!-- Sidebar -->
+    <aside id="customizer-sidebar" class="chrome-sidebar">
+      <div class="sidebar-header">
+        <h2>Customize this page</h2>
+        <button id="close-sidebar" class="close-btn">&times;</button>
+      </div>
+
+      <div class="sidebar-scroll-content">
+        <div class="sidebar-panel">
+          <section class="appearance-section">
+            <label class="section-label">Appearance</label>
+            <div class="segmented-control">
+              <button data-mode="light" id="btn-light">Light</button>
+              <button data-mode="dark" id="btn-dark">Dark</button>
+              <button data-mode="device" id="btn-device">Device</button>
+            </div>
+          </section>
+
+          <section class="appearance-section">
+            <label class="section-label">Colors</label>
+            <div class="theme-grid" id="theme-presets"></div>
+          </section>
+
+          <section class="follow-colors-row">
+            <span>Follow device colors</span>
+            <label class="switch">
+              <input type="checkbox" id="device-color-toggle" />
+              <span class="slider"></span>
+            </label>
+          </section>
+          <button class="action-btn-outline">Change wallpaper</button>
+        </div>
+
+        <div class="sidebar-panel mini-panel">
+          <span>Toolbar</span>
+          <svg viewBox="0 0 24 24" width="16">
+            <path
+              d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+
+        <div class="sidebar-panel mini-panel">
+          <div class="flex-between">
+            <span>Show shortcuts</span>
+            <label class="switch">
+              <input type="checkbox" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- FIXED Shortcut Modal -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+      <div class="modal-box">
+        <h3>Edit shortcut</h3>
+        <div class="modal-field">
+          <label>Name</label>
+          <input type="text" id="modal-name" autocomplete="off" />
+        </div>
+        <div class="modal-field">
+          <label>URL</label>
+          <input type="url" id="modal-url" autocomplete="off" />
+        </div>
+        <div class="modal-actions">
+          <button id="modal-delete" class="btn-flat btn-danger">Remove</button>
+          <div class="right-btns">
+            <button id="modal-cancel" class="btn-stroke">Cancel</button>
+            <button id="modal-save" class="btn-solid">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

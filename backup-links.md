@@ -1,0 +1,7 @@
+- reddit -:[Reddit](https://www.reddit.com/)
+- github -:[Github](https://github.com)
+- claude -:[Claude](https://claude.ai/)
+- youtube -:[Youtube](https://www.youtube.com/)
+- Photoshop -:[Photoepia](https://www.photopea.com/)
+- Job apply -:[Job apply](https://fa-ewjt-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/my-profile)
+- images -:[Images](https://www.lummi.ai/s/illustration/golden-grass)

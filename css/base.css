@@ -1,0 +1,41 @@
+:root {
+  /* Exact color from your provided image */
+  --bg-color: #2b3648;
+  --text-main: #ffffff;
+  --text-dim: #9aa0a6;
+  --tile-bg: rgba(255, 255, 255, 0.1);
+  --tile-hover: rgba(255, 255, 255, 0.18);
+  --accent: AccentColor;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-color: #ffffff;
+    --text-main: #202124;
+    --text-dim: #5f6368;
+    --tile-bg: #f1f3f4;
+    --tile-hover: #e8eaed;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family:
+    "Inter",
+    -apple-system,
+    sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.hidden {
+  display: none !important;
+}

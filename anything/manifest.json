@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "version": "1.3.0",
+  "name": "anything",
+  "theme": {
+    "images": {
+      "theme_ntp_background": "theme_ntp_background.png"
+    },
+    "colors": {
+
+      "frame": [24, 51, 77],
+      "frame_inactive": [28, 40, 60],
+      "toolbar": [24, 51, 77],
+      "ntp_background": [24, 51, 77],
+
+
+      "omnibox_background": [40, 65, 90],
+      "omnibox_text": [255, 255, 255],
+      "toolbar_text": [255, 255, 255],
+      "toolbar_button_icon": [255, 255, 255],
+
+
+      "tab_text": [255, 255, 255],
+      "tab_background_text": [180, 190, 200],
+      "bookmark_text": [255, 255, 255],
+
+
+      "ntp_text": [255, 255, 255],
+      "ntp_link": [138, 180, 248]
+    },
+    "tints": {
+      "buttons": [0, 0, 1]
+    },
+    "properties": {
+      "ntp_background_alignment": "center",
+      "ntp_background_repeat": "no-repeat"
+    }
+  }
+}

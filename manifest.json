@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "YTab-Version-2.0",
+  "version": "2.0.0",
+  "description": "A minimal, customizable new tab page.",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "permissions": [
+    "storage",
+    "bookmarks",
+    "history",
+    "favicon"
+  ],
+  "icons": {
+    "128": "icons/icon128.png"
+  },
+  "offline_enabled": true
+}
