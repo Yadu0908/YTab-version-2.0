@@ -41,12 +41,13 @@ export const TaskStore = {
     return tasks.filter((t) => t.date === today);
   },
 
-  add: async (name) => {
+  add: async (name, description = "") => {
     const tasks = await TaskStore.getAll();
     // unshift so the newest task renders at the top of today's list
     tasks.unshift({
       id: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
       name,
+      description,
       status: "pending",
       date: todayStr(),
     });

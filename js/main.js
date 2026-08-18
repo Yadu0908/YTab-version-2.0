@@ -42,7 +42,12 @@ function applyTheme(mode, color) {
     (p) => p.c1.toLowerCase() === color.toLowerCase(),
   );
   const sidebarColor = preset ? preset.c2 : color;
-  const tileColor = preset ? preset.c3 : "rgba(128,128,128,0.2)";
+  // For presets, use the curated tile shade. For any custom-picked color,
+  // derive a soft tint of that exact color so shortcut icon tiles (and the
+  // GitHub tile) visibly follow the chosen theme instead of staying gray.
+  const tileColor = preset
+    ? preset.c3
+    : `color-mix(in srgb, ${color} 30%, transparent)`;
   const outerColor = preset ? preset.c4 : "#1a1a1a";
 
   document.documentElement.setAttribute("data-theme", targetMode);
@@ -50,6 +55,9 @@ function applyTheme(mode, color) {
   document.documentElement.style.setProperty("--side-bg", sidebarColor);
   document.documentElement.style.setProperty("--tile-bg", tileColor);
   document.documentElement.style.setProperty("--outer-shell", outerColor);
+  // Accent follows the theme color too, so focus rings, the "+Add target"
+  // button, and other accent-driven UI shift with the picked theme.
+  document.documentElement.style.setProperty("--accent", color);
 
   document.querySelectorAll(".segmented-control button").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.mode === mode);

@@ -3,99 +3,85 @@
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 48px 32px 24px;
+  padding: 20px 32px 24px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 18px;
 }
 
-.content-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 28px;
-}
-
-.shortcuts-panel {
-  flex: 1;
-  min-width: 0;
-  background: var(--side-bg, #1d2636);
-  border: 1px solid var(--border, #3c4043);
-  border-radius: 16px;
-  padding: 28px;
+/* Shortcuts sit plainly in the middle, no card/border around them */
+.shortcuts-center {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 480px;
+  min-height: auto;
+  padding: 8px 0 4px;
 }
 
-/* ---------- CONTRIBUTION GRAPH ---------- */
-.graph-panel {
+/* ---------- MERGED GRAPH + TASKS SECTION ---------- */
+/* No card/box — blends directly with the wallpaper/background */
+.graph-card {
   width: 100%;
-  background: var(--side-bg, #1d2636);
-  border: 1px solid var(--border, #3c4043);
-  border-radius: 16px;
-  padding: 22px 26px 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 .graph-title {
   font-size: 14px;
   font-weight: 500;
   color: var(--text-color, #e8eaed);
   margin-bottom: 16px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
-#contribution-scroll {
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: 6px;
-}
-#contribution-scroll::-webkit-scrollbar {
-  height: 6px;
-}
-#contribution-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
-}
-#contribution-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+/* ---------- CONTRIBUTION GRAPH (exact full-width fit, no scroll) ---------- */
 .contribution-months {
   display: flex;
   gap: 3px;
   margin-bottom: 4px;
-  min-width: max-content;
+  width: 100%;
 }
 .contrib-month-col {
-  width: 11px;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 0;
   font-size: 10px;
   color: var(--text-dim, #9aa0a6);
   white-space: nowrap;
-  overflow: visible;
+  overflow: hidden;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .contribution-graph {
   display: flex;
   gap: 3px;
-  min-width: max-content;
+  width: 100%;
 }
 .contrib-col {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 .contrib-cell {
-  width: 11px;
-  height: 11px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   border-radius: 2px;
   background: rgba(128, 128, 128, 0.18);
   transition: transform 0.1s ease;
 }
-.contrib-cell:hover {
-  transform: scale(1.3);
+.contrib-cell.clickable {
+  cursor: pointer;
+}
+.contrib-cell.clickable:hover {
+  transform: scale(1.25);
 }
 .contrib-cell.level-future {
+  background: rgba(128, 128, 128, 0.09);
+}
+.contrib-cell.level-pad {
   background: transparent;
 }
 .contrib-cell.level-1 {
@@ -111,6 +97,11 @@
   outline: 1.5px solid var(--accent, #8ab4f8);
   outline-offset: 1px;
 }
+.contrib-cell.cell-active {
+  outline: 1.5px solid var(--accent, #8ab4f8);
+  outline-offset: 1px;
+  transform: scale(1.25);
+}
 
 .contrib-legend {
   display: flex;
@@ -119,53 +110,143 @@
   margin-top: 12px;
   font-size: 11px;
   color: var(--text-dim, #9aa0a6);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 .contrib-legend .contrib-cell {
+  width: 11px;
+  height: 11px;
   cursor: default;
 }
 .contrib-legend .contrib-cell:hover {
   transform: none;
 }
 
-/* ---------- TASK PANEL (right column, fixed height, material style) ---------- */
-.tasks-panel {
-  width: 340px;
+/* ---------- DAY POPOVER (click a cell to expand) ---------- */
+.day-popover {
+  position: fixed;
+  z-index: 3000;
+  background: var(--outer-shell, #14192a);
+  border: 1px solid var(--border, #3c4043);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  transform: scale(0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.18s cubic-bezier(0.34, 1.3, 0.64, 1),
+    opacity 0.14s ease;
+}
+.day-popover.open {
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+.day-popover.hidden {
+  display: none;
+}
+.day-popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.day-popover-date {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-color, #e8eaed);
+}
+.day-popover-count {
+  font-size: 11px;
+  color: #40c463;
   flex-shrink: 0;
-  height: 480px;
+}
+.day-popover-body {
+  max-height: 220px;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  background: var(--side-bg, #1d2636);
-  border-radius: 16px;
-  padding: 22px 22px 18px;
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.3),
-    0 4px 16px rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--border, #3c4043);
+  gap: 6px;
+}
+.day-popover-empty {
+  font-size: 12px;
+  color: var(--text-dim, #9aa0a6);
+  padding: 6px 0;
+}
+.day-popover-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-dim, #9aa0a6);
+}
+.day-popover-item .dp-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(128, 128, 128, 0.4);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.dp-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.dp-desc {
+  font-size: 11px;
+  color: var(--text-dim, #9aa0a6);
+  opacity: 0.75;
+}
+.day-popover-item.done {
+  color: var(--text-color, #e8eaed);
+}
+.day-popover-item.done .dp-dot {
+  background: #40c463;
+}
+
+/* ---------- TASKS SECTION (inline, inside the graph card) ---------- */
+.graph-divider {
+  height: 1px;
+  background: var(--border, #3c4043);
+  margin: 18px 0 14px;
+  opacity: 0.6;
+}
+
+.tasks-inline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
 }
 .tasks-panel-title {
   font-size: 14px;
   font-weight: 500;
   color: var(--text-color, #e8eaed);
-  margin-bottom: 14px;
-  flex-shrink: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
-#tasks-list {
-  flex: 1;
-  min-height: 0;
+.tasks-inline-body {
   display: flex;
-  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
 }
 
 .task-rows {
   flex: 1;
-  min-height: 0;
+  min-width: 0;
+  height: 220px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding-right: 4px;
-  margin-bottom: 14px;
+}
+.task-rows:has(.task-empty) {
+  align-items: center;
+  justify-content: center;
 }
 .task-rows::-webkit-scrollbar {
   width: 5px;
@@ -193,13 +274,29 @@
 .task-row:hover {
   background: rgba(255, 255, 255, 0.08);
 }
-.task-name {
+.task-text {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.task-name {
   font-size: 13.5px;
   color: var(--text-color, #e8eaed);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.task-desc {
+  font-size: 11.5px;
+  color: var(--text-dim, #9aa0a6);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.task-row.done .task-desc {
+  opacity: 0.5;
 }
 .task-row.done {
   background: rgba(64, 196, 99, 0.07);
@@ -252,11 +349,12 @@
 
 .task-add-row {
   display: flex;
+  flex-direction: column;
   gap: 10px;
+  width: 220px;
   flex-shrink: 0;
 }
 .task-add-row input {
-  flex: 1;
   background: rgba(0, 0, 0, 0.22);
   border: 1px solid var(--border, #3c4043);
   border-radius: 10px;
@@ -269,28 +367,50 @@
 .task-add-row input:focus {
   border-color: var(--accent, #8ab4f8);
 }
+.task-add-row textarea {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--border, #3c4043);
+  border-radius: 10px;
+  padding: 9px 14px;
+  color: var(--text-color, #e8eaed);
+  font-size: 12.5px;
+  font-family: inherit;
+  outline: none;
+  resize: none;
+  transition: border-color 0.15s ease;
+}
+.task-add-row textarea:focus {
+  border-color: var(--accent, #8ab4f8);
+}
 .task-add-row button {
-  width: 40px;
   border-radius: 10px;
   border: none;
   background: var(--accent, #8ab4f8);
   color: #08240f;
-  font-size: 18px;
+  padding: 10px 0;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(138, 180, 248, 0.35);
   transition: transform 0.1s ease;
 }
 .task-add-row button:active {
-  transform: scale(0.92);
+  transform: scale(0.96);
 }
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width: 860px) {
-  .content-row {
+@media (max-width: 720px) {
+  .tasks-inline-body {
     flex-direction: column;
   }
-  .tasks-panel {
+  .task-add-row {
     width: 100%;
+    flex-direction: row;
+  }
+  .task-add-row input {
+    flex: 1;
+  }
+  .task-add-row button {
+    width: 44px;
   }
 }

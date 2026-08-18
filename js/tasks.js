@@ -15,19 +15,28 @@ export async function renderTasks() {
       (t) => `
     <div class="task-row ${t.status === "done" ? "done" : ""}" data-id="${t.id}">
       <button class="task-complete" title="Mark complete">${CHECK_ICON}</button>
-      <span class="task-name">${escapeHtml(t.name)}</span>
+      <div class="task-text">
+        <span class="task-name">${escapeHtml(t.name)}</span>
+        ${t.description ? `<span class="task-desc">${escapeHtml(t.description)}</span>` : ""}
+      </div>
       <button class="task-cross" title="Remove">${CROSS_ICON}</button>
     </div>`,
     )
     .join("");
 
-  const emptyHtml = `<div class="task-empty">No targets yet — add one below.</div>`;
+  const emptyHtml = `<div class="task-empty">No targets yet — add one.</div>`;
 
   container.innerHTML = `
-    <div class="task-rows">${todays.length ? rowsHtml : emptyHtml}</div>
-    <div class="task-add-row">
-      <input type="text" id="new-task-input" placeholder="Add today's target..." autocomplete="off" />
-      <button id="new-task-btn" title="Add">+</button>
+    <div class="tasks-inline-header">
+      <div class="tasks-panel-title">Today's targets</div>
+    </div>
+    <div class="tasks-inline-body">
+      <div class="task-rows">${todays.length ? rowsHtml : emptyHtml}</div>
+      <div class="task-add-row">
+        <input type="text" id="new-task-input" placeholder="Add today's target..." autocomplete="off" />
+        <textarea id="new-task-desc" placeholder="Description (optional)" rows="2"></textarea>
+        <button id="new-task-btn" title="Add">+ Add target</button>
+      </div>
     </div>
   `;
 
@@ -50,13 +59,16 @@ export async function renderTasks() {
   });
 
   const input = document.getElementById("new-task-input");
+  const descInput = document.getElementById("new-task-desc");
   const addBtn = document.getElementById("new-task-btn");
 
   const addTask = async () => {
     const val = input.value.trim();
     if (!val) return;
-    await TaskStore.add(val);
+    const desc = descInput.value.trim();
+    await TaskStore.add(val, desc);
     input.value = "";
+    descInput.value = "";
     await renderTasks();
     // new task lands at the top — scroll the list back up to reveal it
     container.querySelector(".task-rows")?.scrollTo({ top: 0 });

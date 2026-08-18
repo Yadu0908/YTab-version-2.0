@@ -33,9 +33,14 @@ body {
   height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
-  overflow: hidden;
+  align-items: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
   transition: background 0.3s ease;
+}
+html {
+  height: 100%;
+  overflow: hidden;
 }
 
 /* --- SHORTCUTS GRID --- */

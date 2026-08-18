@@ -13,13 +13,11 @@
   </head>
   <body>
     <div class="dashboard">
-      <!-- Full-width, scrollable, ~1 year contribution graph -->
-      <div class="graph-panel">
+      <!-- Merged card: contribution graph (this year, full width) + today's targets -->
+      <div class="graph-card">
         <div class="graph-title">Tasks complete graph</div>
-        <div id="contribution-scroll">
-          <div id="contribution-months" class="contribution-months"></div>
-          <div id="contribution-graph" class="contribution-graph"></div>
-        </div>
+        <div id="contribution-months" class="contribution-months"></div>
+        <div id="contribution-graph" class="contribution-graph"></div>
         <div class="contrib-legend">
           <span>Less</span>
           <div class="contrib-cell level-0"></div>
@@ -28,18 +26,15 @@
           <div class="contrib-cell level-3"></div>
           <span>More</span>
         </div>
+
+        <div class="graph-divider"></div>
+
+        <div id="tasks-list"></div>
       </div>
 
-      <!-- Shortcuts (left) + today's tasks (right, fixed height, material card) -->
-      <div class="content-row">
-        <div class="shortcuts-panel">
-          <div id="shortcuts-grid" class="shortcuts-grid"></div>
-        </div>
-
-        <div class="tasks-panel">
-          <div class="tasks-panel-title">Today's targets</div>
-          <div id="tasks-list"></div>
-        </div>
+      <!-- Shortcuts, centered, no wrapper card -->
+      <div class="shortcuts-center">
+        <div id="shortcuts-grid" class="shortcuts-grid"></div>
       </div>
     </div>
 
@@ -51,7 +46,7 @@
           fill="currentColor"
         />
       </svg>
-      <span>Customize</span>
+      <span>Customize Chrome</span>
     </button>
 
     <!-- Sidebar -->
