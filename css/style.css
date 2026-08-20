@@ -55,30 +55,30 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100px;
-  padding: 10px 0;
+  width: 78px;
+  padding: 8px 0;
   background: transparent;
   cursor: pointer;
   position: relative; /* For edit dots positioning */
 }
 
 .icon-box {
-  width: 64px;
-  height: 64px;
+  width: 50px;
+  height: 50px;
   background: var(--tile-bg);
-  border-radius: 16px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   transition: 0.3s;
 }
 .icon-box img {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 .label {
-  font-size: 13px;
+  font-size: 11.5px;
   text-align: center;
   color: var(--text-color);
   width: 100%;
@@ -314,16 +314,22 @@ input:checked + .slider:before {
   position: fixed;
   bottom: 16px;
   right: 16px;
-  background: var(--side-bg);
-  border: 1px solid var(--border);
-  color: var(--accent);
+  background: rgba(20, 20, 25, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #ffffff;
   padding: 10px 18px;
   border-radius: 50px;
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.3);
   z-index: 50;
+}
+.customize-fab:hover {
+  background: rgba(30, 30, 36, 0.7);
 }
 .hidden {
   display: none !important;
@@ -426,41 +432,41 @@ input:checked + .slider:before {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 35px; /* Gap thoda badhaya spacious feel ke liye */
+  gap: 22px;
 }
 
 .shortcut-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 90px;
-  padding: 10px 0;
+  width: 78px;
+  padding: 8px 0;
   cursor: pointer;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .icon-box {
-  width: 64px;
-  height: 64px;
+  width: 50px;
+  height: 50px;
   background: var(--tile-bg);
-  border-radius: 16px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25); /* Subtle shadow for depth */
   transition: 0.3s;
 }
 
 .icon-box img {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2)); /* Icon par bhi shadow */
 }
 
 /* Label Fix - Dullness removal */
 .label {
-  font-size: 13px;
+  font-size: 11.5px;
   text-align: center;
   color: #c7c7c7; /* PURE WHITE for labels */
   font-weight: 500;
@@ -472,6 +478,19 @@ input:checked + .slider:before {
 /* Plus Icon inside the grid */
 .add-btn .icon-box svg {
   color: #ffffff;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
+}
+
+/* --- DRAG TO REORDER --- */
+.shortcut-item[draggable="true"] {
+  cursor: grab;
+}
+.shortcut-item.dragging {
+  opacity: 0.4;
+}
+.shortcut-item.drag-over .icon-box {
+  outline: 2px solid var(--accent, #8ab4f8);
+  outline-offset: 2px;
+  transform: scale(1.06);
 }

@@ -9,15 +9,6 @@ function levelFor(count) {
   return 0;
 }
 
-/**
- * Renders the current calendar year (Jan 1 -> Dec 31) as a GitHub-style
- * grid into #contribution-graph, sized to fill the container's full width
- * (columns use flex:1, cells are aspect-ratio:1 squares) — no horizontal
- * scrolling needed since the week count for a year is fixed.
- * Days outside the current year (padding to complete the first/last week)
- * render as invisible spacers. Clicking a real, non-future day opens an
- * animated popover with that day's tasks.
- */
 export async function renderContributionGraph() {
   const el = document.getElementById("contribution-graph");
   const monthsEl = document.getElementById("contribution-months");

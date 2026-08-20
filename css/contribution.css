@@ -1,12 +1,12 @@
 /* ---------- PAGE LAYOUT ---------- */
 .dashboard {
   width: 100%;
-  max-width: 1280px;
+  max-width: none;
   margin: 0 auto;
-  padding: 20px 32px 24px;
+  padding: clamp(12px, 3vw, 20px) clamp(16px, 4vw, 48px) 24px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: clamp(12px, 2vw, 18px);
 }
 
 /* Shortcuts sit plainly in the middle, no card/border around them */
@@ -232,12 +232,13 @@
   display: flex;
   gap: 14px;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .task-rows {
-  flex: 1;
-  min-width: 0;
-  height: 220px;
+  flex: 2;
+  min-width: 260px;
+  min-height: 140px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -306,7 +307,8 @@
   opacity: 0.5;
 }
 .task-complete,
-.task-cross {
+.task-cross,
+.task-edit {
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -321,7 +323,8 @@
     transform 0.1s ease;
 }
 .task-complete:active,
-.task-cross:active {
+.task-cross:active,
+.task-edit:active {
   transform: scale(0.88);
 }
 .task-complete {
@@ -332,12 +335,78 @@
   background: #40c463;
   color: #08240f;
 }
+.task-edit {
+  background: rgba(138, 180, 248, 0.14);
+  color: var(--accent, #8ab4f8);
+  opacity: 0;
+}
+.task-row:hover .task-edit {
+  opacity: 1;
+}
+.task-edit:hover {
+  background: rgba(138, 180, 248, 0.28);
+}
 .task-cross {
   background: rgba(242, 139, 130, 0.12);
   color: #f28b82;
 }
 .task-cross:hover {
   background: rgba(242, 139, 130, 0.25);
+}
+
+/* Inline edit mode */
+.task-row.editing {
+  align-items: flex-start;
+  background: rgba(138, 180, 248, 0.08);
+  border: 1px solid rgba(138, 180, 248, 0.3);
+}
+.task-edit-fields {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.task-edit-fields input,
+.task-edit-fields textarea {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border, #3c4043);
+  border-radius: 8px;
+  padding: 7px 10px;
+  color: #ffffff;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  resize: none;
+}
+.task-edit-fields input:focus,
+.task-edit-fields textarea:focus {
+  border-color: var(--accent, #8ab4f8);
+}
+.task-edit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.task-edit-save,
+.task-edit-cancel {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.task-edit-save {
+  background: rgba(64, 196, 99, 0.2);
+  color: #40c463;
+}
+.task-edit-cancel {
+  background: rgba(242, 139, 130, 0.15);
+  color: #f28b82;
 }
 
 .task-empty {
@@ -350,48 +419,61 @@
 .task-add-row {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  width: 220px;
+  gap: 8px;
+  width: clamp(170px, 18vw, 200px);
   flex-shrink: 0;
 }
 .task-add-row input {
-  background: rgba(0, 0, 0, 0.22);
-  border: 1px solid var(--border, #3c4043);
+  background: rgba(20, 20, 25, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 10px;
-  padding: 11px 14px;
-  color: var(--text-color, #e8eaed);
-  font-size: 13.5px;
+  padding: 9px 12px;
+  color: #ffffff;
+  font-size: 13px;
   outline: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
   transition: border-color 0.15s ease;
+}
+.task-add-row input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
 }
 .task-add-row input:focus {
   border-color: var(--accent, #8ab4f8);
 }
 .task-add-row textarea {
-  background: rgba(0, 0, 0, 0.22);
-  border: 1px solid var(--border, #3c4043);
+  background: rgba(20, 20, 25, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 10px;
-  padding: 9px 14px;
-  color: var(--text-color, #e8eaed);
-  font-size: 12.5px;
+  padding: 8px 12px;
+  min-height: 60px;
+  color: #ffffff;
+  font-size: 12px;
   font-family: inherit;
   outline: none;
   resize: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
   transition: border-color 0.15s ease;
+}
+.task-add-row textarea::placeholder {
+  color: rgba(255, 255, 255, 0.45);
 }
 .task-add-row textarea:focus {
   border-color: var(--accent, #8ab4f8);
 }
 .task-add-row button {
   border-radius: 10px;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   background: var(--accent, #8ab4f8);
   color: #08240f;
-  padding: 10px 0;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 9px 0;
+  font-size: 13.5px;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(138, 180, 248, 0.35);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
   transition: transform 0.1s ease;
 }
 .task-add-row button:active {
@@ -399,18 +481,6 @@
 }
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width: 720px) {
-  .tasks-inline-body {
-    flex-direction: column;
-  }
-  .task-add-row {
-    width: 100%;
-    flex-direction: row;
-  }
-  .task-add-row input {
-    flex: 1;
-  }
-  .task-add-row button {
-    width: 44px;
-  }
-}
+/* No layout-restructuring breakpoints — sizes scale fluidly via clamp()
+   so the page looks consistent whether the window is small or large,
+   instead of the layout jumping to a different arrangement. */

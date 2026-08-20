@@ -31,6 +31,17 @@ const grid = document.getElementById("shortcuts-grid");
 const themeGrid = document.getElementById("theme-presets");
 const modal = document.getElementById("modal-overlay");
 
+// Detects near-gray colors (dark/white/gray theme swatches, or a
+// grayish custom pick) where using the color itself as an accent would
+// have almost no contrast against the same-family background.
+function isGrayscale(hex) {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return Math.max(r, g, b) - Math.min(r, g, b) < 24;
+}
+
 function applyTheme(mode, color) {
   let targetMode = mode;
   if (mode === "device") {
@@ -49,15 +60,25 @@ function applyTheme(mode, color) {
     ? preset.c3
     : `color-mix(in srgb, ${color} 30%, transparent)`;
   const outerColor = preset ? preset.c4 : "#1a1a1a";
+  // Accent must be a vivid, legible highlight — never the raw background
+  // color. Grayscale swatches (dark/white/gray presets, and near-gray
+  // custom picks) had c1 basically equal to the background, which made
+  // the accent invisible. Detect that and fall back to a proper accent.
+  const fallbackAccent = targetMode === "light" ? "#1a73e8" : "#8ab4f8";
+  const accentColor = preset
+    ? isGrayscale(preset.c1)
+      ? fallbackAccent
+      : preset.c1
+    : isGrayscale(color)
+      ? fallbackAccent
+      : `color-mix(in srgb, ${color} 65%, white)`;
 
   document.documentElement.setAttribute("data-theme", targetMode);
   document.documentElement.style.setProperty("--bg-color", color);
   document.documentElement.style.setProperty("--side-bg", sidebarColor);
   document.documentElement.style.setProperty("--tile-bg", tileColor);
   document.documentElement.style.setProperty("--outer-shell", outerColor);
-  // Accent follows the theme color too, so focus rings, the "+Add target"
-  // button, and other accent-driven UI shift with the picked theme.
-  document.documentElement.style.setProperty("--accent", color);
+  document.documentElement.style.setProperty("--accent", accentColor);
 
   document.querySelectorAll(".segmented-control button").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.mode === mode);
@@ -103,6 +124,8 @@ function renderShortcuts() {
   shortcuts.forEach((s, index) => {
     const div = document.createElement("div");
     div.className = "shortcut-item";
+    div.draggable = true;
+    div.dataset.index = index;
     const icon = `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(s.url)}&size=64`;
 
     div.innerHTML = `
@@ -127,6 +150,35 @@ function renderShortcuts() {
     div.oncontextmenu = (e) => {
       e.preventDefault();
       openModal(index);
+    };
+
+    // --- Drag to reorder (Chrome new-tab style) ---
+    div.ondragstart = (e) => {
+      e.dataTransfer.setData("text/plain", String(index));
+      e.dataTransfer.effectAllowed = "move";
+      requestAnimationFrame(() => div.classList.add("dragging"));
+    };
+    div.ondragend = () => {
+      div.classList.remove("dragging");
+      grid
+        .querySelectorAll(".drag-over")
+        .forEach((el) => el.classList.remove("drag-over"));
+    };
+    div.ondragover = (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      div.classList.add("drag-over");
+    };
+    div.ondragleave = () => div.classList.remove("drag-over");
+    div.ondrop = (e) => {
+      e.preventDefault();
+      div.classList.remove("drag-over");
+      const fromIndex = Number(e.dataTransfer.getData("text/plain"));
+      const toIndex = Number(div.dataset.index);
+      if (Number.isNaN(fromIndex) || fromIndex === toIndex) return;
+      const [moved] = shortcuts.splice(fromIndex, 1);
+      shortcuts.splice(toIndex, 0, moved);
+      chrome.storage.local.set({ myShortcuts: shortcuts }, renderShortcuts);
     };
 
     grid.appendChild(div);
@@ -170,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   });
 
-  document.getElementById("modal-save").onclick = () => {
+  const saveModal = () => {
     const n = document.getElementById("modal-name").value.trim();
     let u = document.getElementById("modal-url").value.trim();
     if (!n || !u) return;
@@ -182,6 +234,16 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.classList.add("hidden");
     });
   };
+
+  document.getElementById("modal-save").onclick = saveModal;
+
+  const nameField = document.getElementById("modal-name");
+  const urlField = document.getElementById("modal-url");
+  [nameField, urlField].forEach((field) => {
+    field.onkeydown = (e) => {
+      if (e.key === "Enter") saveModal();
+    };
+  });
 
   document.getElementById("modal-delete").onclick = () => {
     if (editingIndex !== null) {

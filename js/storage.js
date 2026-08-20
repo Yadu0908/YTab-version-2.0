@@ -64,6 +64,18 @@ export const TaskStore = {
     return tasks;
   },
 
+  // Update a task's name/description (used by inline edit)
+  update: async (id, { name, description } = {}) => {
+    const tasks = await TaskStore.getAll();
+    const t = tasks.find((t) => t.id === id);
+    if (t) {
+      if (name !== undefined) t.name = name;
+      if (description !== undefined) t.description = description;
+    }
+    await TaskStore.saveAll(tasks);
+    return tasks;
+  },
+
   // Cross = remove the task entirely
   remove: async (id) => {
     const tasks = await TaskStore.getAll();
