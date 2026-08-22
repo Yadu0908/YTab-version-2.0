@@ -13,11 +13,15 @@
   </head>
   <body>
     <div class="dashboard">
-      <!-- Merged card: contribution graph (this year, full width) + today's targets -->
+      <!-- Merged card: contribution graph (this year, full-bleed width) + today's targets -->
       <div class="graph-card">
         <div class="graph-title">Tasks complete graph</div>
-        <div id="contribution-months" class="contribution-months"></div>
-        <div id="contribution-graph" class="contribution-graph"></div>
+
+        <div class="graph-bleed">
+          <div id="contribution-months" class="contribution-months"></div>
+          <div id="contribution-graph" class="contribution-graph"></div>
+        </div>
+
         <div class="contrib-legend">
           <span>Less</span>
           <div class="contrib-cell level-0"></div>
@@ -126,6 +130,7 @@
       </div>
     </div>
 
+    <script src="js/demodata.js"></script>
     <script type="module" src="js/main.js"></script>
   </body>
 </html>

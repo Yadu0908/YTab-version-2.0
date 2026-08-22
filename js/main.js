@@ -26,6 +26,37 @@ const themePresets = [
   { c1: "#424242", c2: "#f5f5f5", c3: "#eeeeee", c4: "#212121" },
 ];
 
+// Chrome's _favicon API only resolves inside a real installed extension.
+// When this page is opened as a plain demo (not chrome-extension://...),
+// fall back to a public favicon service so icons still render.
+function getFaviconUrl(pageUrl) {
+  const isRealExtension =
+    typeof chrome !== "undefined" &&
+    chrome.runtime?.id &&
+    location.protocol === "chrome-extension:";
+  if (isRealExtension) {
+    return `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(pageUrl)}&size=64`;
+  }
+  return `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(pageUrl)}`;
+}
+
+// Automatically merges the sample history from demodata.js into your
+// real task list, exactly once, so the contribution graph looks alive
+// without any manual step. It only ADDS past-dated demo entries — it
+// never touches today's tasks or your shortcuts, and never runs twice
+// (guarded by the "demoHistorySeeded" flag).
+function maybeSeedDemoHistory(done) {
+  chrome.storage.local.get(["demoHistorySeeded", "tasks"], (res) => {
+    if (res.demoHistorySeeded || !window.YTAB_DEMO_DATA?.historyTasks) {
+      done();
+      return;
+    }
+    const existing = res.tasks || [];
+    const merged = existing.concat(window.YTAB_DEMO_DATA.historyTasks);
+    chrome.storage.local.set({ tasks: merged, demoHistorySeeded: true }, done);
+  });
+}
+
 const sidebar = document.getElementById("customizer-sidebar");
 const grid = document.getElementById("shortcuts-grid");
 const themeGrid = document.getElementById("theme-presets");
@@ -126,7 +157,7 @@ function renderShortcuts() {
     div.className = "shortcut-item";
     div.draggable = true;
     div.dataset.index = index;
-    const icon = `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(s.url)}&size=64`;
+    const icon = getFaviconUrl(s.url);
 
     div.innerHTML = `
         <button class="edit-dots" title="Edit shortcut">${DOTS_ICON}</button>
@@ -193,18 +224,20 @@ function renderShortcuts() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  chrome.storage.local.get(["myShortcuts", "userTheme"], (res) => {
-    shortcuts = res.myShortcuts || [
-      { name: "GitHub", url: "https://github.com" },
-    ];
-    renderShortcuts();
-    renderAppearanceUI();
-    const theme = res.userTheme || { mode: "dark", color: "#202124" };
-    applyTheme(theme.mode, theme.color);
-  });
+  maybeSeedDemoHistory(() => {
+    chrome.storage.local.get(["myShortcuts", "userTheme"], (res) => {
+      shortcuts = res.myShortcuts || [
+        { name: "GitHub", url: "https://github.com" },
+      ];
+      renderShortcuts();
+      renderAppearanceUI();
+      const theme = res.userTheme || { mode: "dark", color: "#202124" };
+      applyTheme(theme.mode, theme.color);
+    });
 
-  renderTasks();
-  renderContributionGraph();
+    renderTasks();
+    renderContributionGraph();
+  });
 
   document.getElementById("sidebar-toggle").onclick = () =>
     sidebar.classList.add("active");
